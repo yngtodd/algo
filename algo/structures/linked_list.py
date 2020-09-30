@@ -75,6 +75,3 @@ class LinkedList:
 
         self.head = node
         self.head.next = head_disconnected
-
-
-
