@@ -62,3 +62,19 @@ class LinkedList:
 
             current_node.next = node
 
+    def prepend(self, data):
+        r"""Prepend some data to the beginning of the linked list
+
+        Args:
+            data: the data to be prepended
+        """
+        node = Node(data)
+        self.num_nodes += 1
+
+        head_disconnected = self.head
+
+        self.head = node
+        self.head.next = head_disconnected
+
+
+
