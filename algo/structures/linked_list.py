@@ -18,6 +18,7 @@ class LinkedList:
 
     def __init__(self):
         self.head = None
+        self.curr = None
         self.num_nodes = 0
 
     def __len__(self):
@@ -25,6 +26,18 @@ class LinkedList:
 
     def __repr__(self):
         return f"LinkedList()"
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.curr is None:
+            self.curr = self.head
+            raise StopIteration()
+        else:
+            data = self.curr.data
+            self.curr = self.curr.next
+            return data
 
     def to_list(self):
         r"""Convert the linked list to a Python list
@@ -55,6 +68,7 @@ class LinkedList:
 
         if self.head == None:
             self.head = node
+            self.curr = node
         else:
             current_node = self.head
             while current_node.next:
@@ -74,6 +88,12 @@ class LinkedList:
         head_disconnected = self.head
 
         self.head = node
+
+        if head_disconnected is None:
+            # We are prepending to an empty LinkedList,
+            # set current pointer to the head
+            self.curr = self.head
+
         self.head.next = head_disconnected
 
     def insert_after(self, key, data):
@@ -121,6 +141,9 @@ class LinkedList:
 
     def pop_head(self):
         r"""Remove the data at the head"""
+        if self.curr == self.head:
+            self.curr = self.head.next
+
         self.head = self.head.next
         self.num_nodes -= 1
 
