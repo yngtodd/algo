@@ -68,7 +68,7 @@ class LinkedList:
 
         if self.head == None:
             self.head = node
-            self.curr = node
+            self.curr = self.head
         else:
             current_node = self.head
             while current_node.next:
@@ -79,6 +79,12 @@ class LinkedList:
     def prepend(self, data):
         r"""Prepend some data to the beginning of the linked list
 
+        Note:
+            prepending to resets the current pointer to the
+            head of the list. If you prepend while iterating through
+            the linked list throught the `__iter__` method, the iteration
+            will begin again from the head node.
+
         Args:
             data: the data to be prepended
         """
@@ -88,11 +94,8 @@ class LinkedList:
         head_disconnected = self.head
 
         self.head = node
-
-        if head_disconnected is None:
-            # We are prepending to an empty LinkedList,
-            # set current pointer to the head
-            self.curr = self.head
+        # Make sure that we always reset out iterable
+        self.curr = self.head
 
         self.head.next = head_disconnected
 
@@ -146,6 +149,16 @@ class LinkedList:
 
         self.head = self.head.next
         self.num_nodes -= 1
+
+    def pop_tail(self):
+        r"""Remove the final node"""
+        current_node = self.head
+        next_node = current_node.next
+        while next_node.next:
+            current_node = current_node.next
+            next_node = next_node.next
+
+        current_node.next = None
 
     def delete(self, data):
         r"""Delete a node with a given data value
