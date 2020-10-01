@@ -75,3 +75,51 @@ class LinkedList:
 
         self.head = node
         self.head.next = head_disconnected
+
+    def pop_head(self):
+        r"""Remove the data at the head"""
+        self.head = self.head.next
+        self.num_nodes -= 1
+
+    def insert_after(self, key, data):
+        r"""Add a node after a node of a given `key` value
+
+        Args:
+            key: the node the data should be added after
+            data: the data to be added
+        """
+        node = Node(data)
+
+        current_node = self.head
+        while current_node.next and current_node.data != key:
+            current_node = current_node.next
+
+        if current_node.next:
+            node_disconnected = current_node.next
+            current_node.next = node
+            node.next = node_disconnected
+            self.num_nodes += 1
+
+    def insert_before(self, key, data):
+        r"""Add a node beore a given `key`
+
+        Args:
+            key: the value of a node before which the data
+                 will be added
+            data: the data to be added
+        """
+        if self.head.data == key:
+            self.prepend(data)
+
+        else:
+            current_node = self.head
+            next_node = current_node.next
+            while next_node.next and next_node.data != key:
+                current_node = current_node.next
+                next_node = next_node.next
+
+            if next_node.data == key:
+                node = Node(data)
+                self.num_nodes += 1
+                current_node.next = node
+                node.next = next_node
