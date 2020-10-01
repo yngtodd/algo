@@ -76,11 +76,6 @@ class LinkedList:
         self.head = node
         self.head.next = head_disconnected
 
-    def pop_head(self):
-        r"""Remove the data at the head"""
-        self.head = self.head.next
-        self.num_nodes -= 1
-
     def insert_after(self, key, data):
         r"""Add a node after a node of a given `key` value
 
@@ -123,3 +118,28 @@ class LinkedList:
                 self.num_nodes += 1
                 current_node.next = node
                 node.next = next_node
+
+    def pop_head(self):
+        r"""Remove the data at the head"""
+        self.head = self.head.next
+        self.num_nodes -= 1
+
+    def delete(self, data):
+        r"""Delete a node with a given data value
+
+        Args:
+            data: the value of the node to be deleted
+        """
+        if self.head.data == data:
+            self.pop_head()
+
+        prev = None
+        current_node = self.head
+
+        while current_node.next and current_node.data != data:
+            prev = current_node
+            current_node = current_node.next
+
+        if current_node.data == data:
+            prev.next = current_node.next
+
