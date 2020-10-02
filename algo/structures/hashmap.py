@@ -50,3 +50,17 @@ class HashMap:
 
         return None
 
+    def delete(self, key):
+        r"""Delete a value
+
+        Args:
+            key: key to the retrieve the value
+        """
+        hash_value = self.hash_function(key)
+        linked_list = self.map[hash_value]
+
+        for key_value in linked_list:
+            if key_value.key == key:
+                linked_list.delete(key_value)
+
+
