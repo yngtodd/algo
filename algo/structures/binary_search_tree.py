@@ -143,3 +143,67 @@ class BinarySearchTree:
         else:
             return False
 
+    def _build_tree_string(self, current_node, current_idx, idx=False, delimiter='-'):
+        r""""""
+        if current_node is None:
+            return [], 0, 0, 0
+
+        line1 = []
+        line2 = []
+
+        """
+        if idx:
+            node_repr = f'{current_idx}{delimiter}{current_node.data}'
+        else:
+            node_repr = f'{current_node.data}'
+        """
+
+        if idx:
+            node_repr = '{}{}{}'.format(current_idx, delimiter, current_node.data)
+        else:
+            node_repr = str(current_node.data)
+            print(f'node_repr: {node_repr}')
+
+        new_root_width = gap_size = len(node_repr)
+
+        l_box, l_box_width, l_root_start, l_root_end = \
+            self._build_tree_string(current_node.left, 2 * current_idx+1, idx, delimiter)
+        r_box, r_box_width, r_root_start, r_root_end = \
+            self._build_tree_string(current_node.right, 2 * current_idx+2, idx, delimiter)
+
+        print(f'l_box_width: {l_box_width}')
+        if l_box_width > 0:
+            l_root = (l_root_start + l_root_end) // 2 + 1
+            line1.append(' ' * (l_root + 1))
+            line1.append('-' * (l_box_width - l_root))
+            line2.append(' ' * l_root + '/')
+            line2.append(' ' * (l_box_width - l_root))
+            new_root_start = l_box_width + 1
+            gap_size += 1
+        else:
+            new_root_start = 0
+
+        if r_box_width > 0:
+            r_root = (r_root_start + r_root_end) // 2
+            line1.append(' ' * r_root)
+            line1.append('-' * (r_box_width - r_root+1))
+            line2.append(' ' * r_root + '\\')
+            line2.append(' ' * (r_box_width - r_root))
+            gap_size += 1
+
+        new_root_end = new_root_start + new_root_width-1
+
+        gap = ' ' * gap_size
+        new_box = [''.join(line1), ''.join(line2)]
+        print(new_box)
+        for i in range(max(len(l_box), len(r_box))):
+            l_line = l_box[i] if i < len(l_box) else ' ' * l_box_width
+            r_line = r_box[i] if i < len(r_box) else ' ' * r_box_width
+            new_box.append(l_line + gap + r_line)
+
+        return new_box, len(new_box[0]), new_root_start, new_root_end
+
+    def pprint(self, idx=False, delimiter='-'):
+        lines = self._build_tree_string(self.root, 0, idx, delimiter)[0]
+        print('\n' + '\n'.join((line.rstrip() for line in lines)))
+
