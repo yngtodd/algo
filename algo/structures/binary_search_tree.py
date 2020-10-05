@@ -91,3 +91,29 @@ class BinarySearchTree(BinaryTree):
         else:
             return False
 
+    def min(self):
+        r"""Get the minimum data value"""
+        if self.root.left is None:
+            return self.root.data
+        else:
+            return self._seek_min(self.root)
+
+    def _seek_min(self, current_node):
+        if current_node.left is None:
+            return current_node.data
+        else:
+            return self._seek_min(current_node.left)
+
+    def max(self):
+        r"""Get the maximum data value"""
+        if self.root.right is None:
+            return self.root.data
+        else:
+            return self._seek_max(self.root)
+
+    def _seek_max(self, current_node):
+        if current_node.right is None:
+            return current_node.data
+        else:
+            return self._seek_max(current_node.right)
+
