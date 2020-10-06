@@ -7,8 +7,9 @@ from algo.structures.api import BinaryTree
 @dataclass
 class Node:
     data: Any
-    left  =  None
-    right =  None
+    left   = None
+    right  = None
+    parent = None
 
 
 class BinarySearchTree(BinaryTree):
@@ -32,14 +33,16 @@ class BinarySearchTree(BinaryTree):
         Returns:
             traversal: the built output string
         """
-        if current_node.data > data:
+        if data < current_node.data:
             if current_node.left is None:
                 current_node.left = Node(data)
+                current_node.left.parent = current_node
             else:
                 self._insert(current_node.left, data)
-        elif current_node.data < data:
+        elif data > current_node.data:
             if current_node.right is None:
                 current_node.right = Node(data)
+                current_node.right.parent = current_node
             else:
                 self._insert(current_node.right, data)
 
@@ -74,6 +77,85 @@ class BinarySearchTree(BinaryTree):
             )
 
             return max(left_subtree_height, right_subtree_height)
+
+    def find(self, data):
+        if self.root:
+            return self._find(self.root, data)
+        else:
+            return None
+
+    def _find(self, current_node, data):
+        if data == current_node.data:
+            return current_node
+        elif data < current_node.data and current_node.left:
+            return self._find(current_node.left, data)
+        elif data > current_node.data and current_node.right:
+            return self._find(current_node.right, data)
+        else:
+            return None
+
+    def delete(self, data):
+        r"""Delete a node containing some given data"""
+        return self._delete_node(self.find(data))
+
+    def _delete_node(self, node):
+        r"""Delete a given node"""
+        if node is None or self.find(node.data) is None:
+            # There is nothing to delete
+            return None
+
+        def min_value_node(current_node):
+            r"""Find the minimum value from a given node"""
+            while current_node.left:
+                current_node = current_node.left
+            return current_node
+
+        def get_num_children(current_node):
+            num_child = 0
+            if current_node.left:
+                num_child += 1
+            if current_node.right:
+                num_child += 1
+            return num_child
+
+        node_parent = node.parent
+        num_children = get_num_children(node)
+
+        # Case 1: delete a leaf node
+        if num_children == 0:
+
+            if node_parent:
+                if node_parent.left == node:
+                    node_parent.left = None
+                else:
+                    node_parent.right = None
+            else:
+                self.root = None
+
+        # Case 2: there is one child node
+        if num_children == 1:
+
+            if node.left:
+                child = node.left
+            else:
+                child = node.right
+
+            if node_parent:
+                if node_parent.left == node:
+                    node_parent.left = child
+                else:
+                    node_parent.right = child
+            else:
+                self.root = child
+
+            child.parent = node_parent
+
+        # Case 3: there are two child nodes
+        if num_children == 2:
+            # Recursively get the successors' data
+            successor = min_value_node(node.right)
+            node.data = successor.data
+            self._delete_node(successor)
 
     def search(self, data):
         if self.root:
